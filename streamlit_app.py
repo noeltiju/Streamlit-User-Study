@@ -1,4 +1,4 @@
-import gspread, pandas as pd, streamlit as st
+import gspread, pandas as pd, streamlit as st, toml
 
 st.markdown("<h1 style='text-align: center;'>Roamify</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>Adding User Ratings</h3>", unsafe_allow_html=True)
@@ -7,9 +7,10 @@ st.markdown("<h3 style='text-align: center;'>Adding User Ratings</h3>", unsafe_a
 spreadsheet_id = "1gCvF2PfMQpp1cVsbSpfzTG8ShN5GAktQ2kY8iLUb7mI"
 scopes = ["https://spreadsheets.google.com/feeds",
          "https://www.googleapis.com/auth/drive"]
-credentials_file = "first-user-study-0ec01ef3e1ce.json"
 
-gc = gspread.service_account(filename=credentials_file, scopes=scopes)
+service_account_info = st.secrets["gcp_service_account"]
+
+gc = gspread.service_account_from_dict(service_account_info, scopes=scopes)
 sh = gc.open_by_key(spreadsheet_id)
 worksheet = sh.worksheet("Attractions")
 data = worksheet.get_all_values()
